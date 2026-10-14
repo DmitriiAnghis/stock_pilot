@@ -68,6 +68,16 @@ class CatalogScreen extends StatelessWidget {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Найдено товаров: ${mockProducts.length}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
