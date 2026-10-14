@@ -22,7 +22,11 @@ class ProductDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(product.sku),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.edit_outlined)),
+          IconButton(
+            onPressed: () {},
+            tooltip: 'Редактировать',
+            icon: const Icon(Icons.edit_outlined),
+          ),
         ],
       ),
       body: ListView(

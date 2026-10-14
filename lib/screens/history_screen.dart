@@ -13,7 +13,11 @@ class HistoryScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('История операций'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.download_outlined)),
+          IconButton(
+            onPressed: () {},
+            tooltip: 'Экспорт в CSV',
+            icon: const Icon(Icons.download_outlined),
+          ),
         ],
       ),
       body: Column(

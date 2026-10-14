@@ -17,6 +17,7 @@ class CatalogScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
+            tooltip: 'Уведомления',
             icon: const Icon(Icons.notifications_none),
           ),
         ],
