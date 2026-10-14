@@ -100,7 +100,7 @@ final mockMovements = [
 // ---------- Текущий пользователь ----------
 const mockUserName = 'Дмитрий Ангиш';
 const mockUserEmail = 'dmitrii.anghis@stockpilot.md';
-const mockUserRole = 'Кладовщик · Склад «Центральный»';
+const mockUserRole = 'Старший кладовщик · Склад «Центральный»';
 
 // ---------- Простые помощники для поиска по id ----------
 Product productById(int id) => mockProducts.firstWhere((p) => p.id == id);
