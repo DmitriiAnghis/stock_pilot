@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
+import 'router.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'StockPilot',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
         ),
         cardTheme: const CardThemeData(margin: EdgeInsets.zero),
       ),
-      home: const LoginScreen(),
+      routerConfig: router, // навигацию принимает go_router; home: исчезает
+
     );
   }
 }

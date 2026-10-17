@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/product_card.dart';
-import 'product_detail_screen.dart';
-import 'operation_form_screen.dart';
+
 
 /// Экран 2. Каталог товаров: поиск по названию/SKU + фильтр по категории/ячейке.
 /// Поиск и фильтры пока только визуальные — заработают на L4.
@@ -23,10 +23,7 @@ class CatalogScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const OperationFormScreen()),
-        ),
+        onPressed: () => context.push('/operation'),
         icon: const Icon(Icons.add),
         label: const Text('Операция'),
       ),
@@ -88,12 +85,9 @@ class CatalogScreen extends StatelessWidget {
                 final product = mockProducts[index];
                 return ProductCard(
                   product: product,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductDetailScreen(product: product),
-                    ),
-                  ),
+                  // push: «зайду и вернусь», id — в адресе
+                  onTap: () => context.push('/products/${product.id}'),
+
                 );
               },
             ),

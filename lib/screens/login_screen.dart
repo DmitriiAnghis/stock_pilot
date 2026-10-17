@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_shell.dart';
+import 'package:go_router/go_router.dart';
 
 /// Экран 1. Вход / регистрация — строго статический (без валидации и логики).
 class LoginScreen extends StatelessWidget {
@@ -61,10 +61,8 @@ class LoginScreen extends StatelessWidget {
               style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(52)),
               // без проверки полей — просто переход на стартовый экран
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeShell()),
-              ),
+              onPressed: () => context.go('/products'),
+
               child: const Text('Войти'),
             ),
             const SizedBox(height: 8),

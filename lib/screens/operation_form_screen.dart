@@ -5,7 +5,13 @@ import '../widgets/movement_tile.dart';
 /// Экран 4. Форма складской операции: тип, товар, количество, ячейки.
 /// Макет: без валидации и сохранения (это L3/L4).
 class OperationFormScreen extends StatelessWidget {
-  const OperationFormScreen({super.key});
+  final int? productId;
+  final int? toLocationId;
+  final String? type;
+
+  const OperationFormScreen(
+      {super.key, this.productId, this.toLocationId, this.type});
+
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../widgets/info_row.dart';
 import '../widgets/stat_tile.dart';
-import 'login_screen.dart';
+import 'package:go_router/go_router.dart';
 
 /// Экран 8. Профиль пользователя.
 class ProfileScreen extends StatelessWidget {
@@ -81,9 +81,8 @@ class ProfileScreen extends StatelessWidget {
               minimumSize: const Size.fromHeight(48),
               foregroundColor: scheme.error,
             ),
-            onPressed: () => Navigator.of(context, rootNavigator: true)
-                .pushReplacement(
-                    MaterialPageRoute(builder: (_) => const LoginScreen())),
+            onPressed: () => context.go('/login'),
+
             icon: const Icon(Icons.logout),
             label: const Text('Выйти'),
           ),

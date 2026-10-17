@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/info_row.dart';
 import '../widgets/product_card.dart';
 import '../widgets/stat_tile.dart';
-import 'product_detail_screen.dart';
+
 
 /// Экран 6. Карточка ячейки: товары в ячейке + кнопка «разместить товар в ячейке».
 class LocationDetailScreen extends StatelessWidget {
-  final Location location;
+  final int id;
 
-  const LocationDetailScreen({super.key, required this.location});
+  const LocationDetailScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final location = locationById(id); // экран сам ищет объект по id
     final products = productsInLocation(location.id);
     final used = usedCapacity(location.id);
     final free = location.capacity - used;
@@ -22,7 +24,8 @@ class LocationDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Ячейка ${location.code}')),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () =>
+            context.push('/operation?type=transfer&toLocationId=${location.id}'),
         icon: const Icon(Icons.move_to_inbox_outlined),
         label: const Text('Разместить товар в ячейке'),
       ),
@@ -65,12 +68,8 @@ class LocationDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: ProductCard(
                 product: p,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProductDetailScreen(product: p),
-                  ),
-                ),
+                onTap: () => context.push('/products/${p.id}'),
+
               ),
             ),
         ],

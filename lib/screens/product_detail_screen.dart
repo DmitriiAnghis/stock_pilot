@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/category_avatar.dart';
 import '../widgets/info_row.dart';
@@ -7,14 +8,15 @@ import '../widgets/stat_tile.dart';
 
 /// Экран 3. Карточка товара: остаток, текущая ячейка, история движений.
 class ProductDetailScreen extends StatelessWidget {
-  final Product product;
+  final int id;
 
-  const ProductDetailScreen({super.key, required this.product});
+  const ProductDetailScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final product = productById(id); // экран сам ищет объект по id
     final location = locationById(product.locationId);
     final movements = movementsForProduct(product.id);
 
@@ -79,7 +81,8 @@ class ProductDetailScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => context
+                      .push('/operation?type=transfer&productId=${product.id}'),
                   icon: const Icon(Icons.swap_horiz),
                   label: const Text('Переместить'),
                 ),
@@ -87,7 +90,9 @@ class ProductDetailScreen extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () => context
+                      .push('/operation?type=shipment&productId=${product.id}'),
+
                   icon: const Icon(Icons.local_shipping_outlined),
                   label: const Text('Отгрузить'),
                 ),
