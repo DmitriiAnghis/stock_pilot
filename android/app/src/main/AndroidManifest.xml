@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- L5: доступ к серверу на ноутбуке (http://10.0.2.2:8080) -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="stock_pilot"
+        android:usesCleartextTraffic="true"
+
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

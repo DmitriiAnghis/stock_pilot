@@ -79,7 +79,7 @@ class Auth {
     return jsonOk(_user(rows.first));
   }
 
-  /// Middleware: Authorization: Bearer <jwt> → req.context['userId'].
+  /// Middleware: `Authorization: Bearer <jwt>` → req.context['userId'].
   Middleware get middleware => (inner) => (req) {
         final header = req.headers['authorization'] ?? '';
         if (!header.startsWith('Bearer ')) {
