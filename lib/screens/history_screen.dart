@@ -14,8 +14,10 @@ class HistoryScreen extends StatelessWidget {
         title: const Text('История операций'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Экспорт CSV будет доступен позже'))),
             tooltip: 'Экспорт в CSV',
+
             icon: const Icon(Icons.download_outlined),
           ),
         ],

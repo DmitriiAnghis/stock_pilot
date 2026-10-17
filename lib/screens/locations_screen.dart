@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/location_card.dart';
-import 'location_detail_screen.dart';
+
 
 /// Экран 5. Складские ячейки: список с загруженностью + поиск по коду ячейки.
 class LocationsScreen extends StatelessWidget {
@@ -30,12 +31,8 @@ class LocationsScreen extends StatelessWidget {
                 final location = mockLocations[index];
                 return LocationCard(
                   location: location,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LocationDetailScreen(location: location),
-                    ),
-                  ),
+                  onTap: () => context.push('/locations/${location.id}'),
+
                 );
               },
             ),

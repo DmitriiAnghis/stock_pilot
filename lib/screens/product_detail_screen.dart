@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/category_avatar.dart';
 import '../widgets/info_row.dart';
@@ -7,14 +8,39 @@ import '../widgets/stat_tile.dart';
 
 /// Экран 3. Карточка товара: остаток, текущая ячейка, история движений.
 class ProductDetailScreen extends StatelessWidget {
-  final Product product;
+  final int id;
 
-  const ProductDetailScreen({super.key, required this.product});
+  const ProductDetailScreen({super.key, required this.id});
+
+  // Деструктивное действие → диалог подтверждения + SnackBar.
+  Future<void> _delete(BuildContext context, Product product) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Удалить товар?'),
+        content: Text('«${product.name}» будет удалён из каталога.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(dialogCtx, false),
+              child: const Text('Отмена')),
+          FilledButton(
+              onPressed: () => Navigator.pop(dialogCtx, true),
+              child: const Text('Удалить')),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Товар ${product.sku} удалён')));
+      context.pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final product = productById(id); // экран сам ищет объект по id
     final location = locationById(product.locationId);
     final movements = movementsForProduct(product.id);
 
@@ -23,10 +49,11 @@ class ProductDetailScreen extends StatelessWidget {
         title: Text(product.sku),
         actions: [
           IconButton(
-            onPressed: () {},
-            tooltip: 'Редактировать',
-            icon: const Icon(Icons.edit_outlined),
+            onPressed: () => _delete(context, product),
+            tooltip: 'Удалить',
+            icon: const Icon(Icons.delete_outline),
           ),
+
         ],
       ),
       body: ListView(
@@ -79,7 +106,8 @@ class ProductDetailScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => context
+                      .push('/operation?type=transfer&productId=${product.id}'),
                   icon: const Icon(Icons.swap_horiz),
                   label: const Text('Переместить'),
                 ),
@@ -87,7 +115,9 @@ class ProductDetailScreen extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () => context
+                      .push('/operation?type=shipment&productId=${product.id}'),
+
                   icon: const Icon(Icons.local_shipping_outlined),
                   label: const Text('Отгрузить'),
                 ),

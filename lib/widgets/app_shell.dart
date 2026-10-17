@@ -1,35 +1,20 @@
 import 'package:flutter/material.dart';
-import 'catalog_screen.dart';
-import 'locations_screen.dart';
-import 'history_screen.dart';
-import 'profile_screen.dart';
+import 'package:go_router/go_router.dart';
 
-/// Временная навигация для демонстрации (на L3 заменится go_router).
-/// Единственный StatefulWidget: хранит только индекс выбранной вкладки.
-class HomeShell extends StatefulWidget {
-  const HomeShell({super.key});
+/// Обёртка с постоянными вкладками. Текущий индекс знает router,
+/// поэтому виджет — StatelessWidget.
+class AppShell extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  State<HomeShell> createState() => _HomeShellState();
-}
-
-class _HomeShellState extends State<HomeShell> {
-  int _index = 0;
-
-  static const _screens = [
-    CatalogScreen(),
-    LocationsScreen(),
-    HistoryScreen(),
-    ProfileScreen(),
-  ];
+  const AppShell({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_index],
+      body: navigationShell, // содержимое текущей вкладки
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: navigationShell.goBranch, // переключает вкладку
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.inventory_2_outlined),
