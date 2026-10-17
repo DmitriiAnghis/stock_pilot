@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../data/mock_data.dart';
+import 'package:provider/provider.dart';
+import '../data/product.dart';
+import '../models/locations_model.dart';
+import '../models/movements_model.dart';
+import '../models/products_model.dart';
 import '../widgets/category_avatar.dart';
 import '../widgets/info_row.dart';
 import '../widgets/movement_tile.dart';
@@ -12,7 +16,7 @@ class ProductDetailScreen extends StatelessWidget {
 
   const ProductDetailScreen({super.key, required this.id});
 
-  // Деструктивное действие → диалог подтверждения + SnackBar.
+  // Деструктивное действие → диалог подтверждения → мутация через модель.
   Future<void> _delete(BuildContext context, Product product) async {
     final ok = await showDialog<bool>(
       context: context,
@@ -29,20 +33,34 @@ class ProductDetailScreen extends StatelessWidget {
         ],
       ),
     );
-    if (ok == true && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Товар ${product.sku} удалён')));
-      context.pop();
-    }
+    if (ok != true || !context.mounted) return;
+    final error = await context.read<ProductsModel>().remove(product.id);
+    if (!context.mounted) return; // экран может умереть, пока «запрос» летит
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error ?? 'Товар ${product.sku} удалён')));
+    if (error == null) context.pop(); // объекта больше нет — экран уходит
   }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final product = productById(id); // экран сам ищет объект по id
-    final location = locationById(product.locationId);
-    final movements = movementsForProduct(product.id);
+    final model = context.watch<ProductsModel>();
+    final product = model.byId(id); // экран ищет объект через модель
+
+    if (product == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: model.isLoading
+              ? const CircularProgressIndicator() // список ещё грузится
+              : const Text('Товар не существует'), // загружен — id-а нет
+        ),
+      );
+    }
+
+    final location = context.watch<LocationsModel>().byId(product.locationId);
+    final movements = context.watch<MovementsModel>().forProduct(product.id);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +71,6 @@ class ProductDetailScreen extends StatelessWidget {
             tooltip: 'Удалить',
             icon: const Icon(Icons.delete_outline),
           ),
-
         ],
       ),
       body: ListView(
@@ -81,9 +98,11 @@ class ProductDetailScreen extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              StatTile(value: '${product.quantity}', label: 'Остаток, ${product.unit}'),
+              StatTile(
+                  value: '${product.quantity}',
+                  label: 'Остаток, ${product.unit}'),
               const SizedBox(width: 12),
-              StatTile(value: location.code, label: 'Текущая ячейка'),
+              StatTile(value: location?.code ?? '—', label: 'Текущая ячейка'),
               const SizedBox(width: 12),
               StatTile(value: '${movements.length}', label: 'Операций'),
             ],
@@ -95,8 +114,14 @@ class ProductDetailScreen extends StatelessWidget {
               child: Column(
                 children: [
                   InfoRow(icon: Icons.qr_code, label: 'SKU', value: product.sku),
-                  InfoRow(icon: Icons.straighten, label: 'Единица', value: product.unit),
-                  InfoRow(icon: Icons.place_outlined, label: 'Зона', value: location.zone),
+                  InfoRow(
+                      icon: Icons.straighten,
+                      label: 'Единица',
+                      value: product.unit),
+                  InfoRow(
+                      icon: Icons.place_outlined,
+                      label: 'Зона',
+                      value: location?.zone ?? '—'),
                 ],
               ),
             ),
@@ -117,7 +142,6 @@ class ProductDetailScreen extends StatelessWidget {
                 child: FilledButton.icon(
                   onPressed: () => context
                       .push('/operation?type=shipment&productId=${product.id}'),
-
                   icon: const Icon(Icons.local_shipping_outlined),
                   label: const Text('Отгрузить'),
                 ),

@@ -1,45 +1,9 @@
-// Зашитые в код данные для L2. Поля моделей — из модели данных темы StockPilot.
-
-class Product {
-  final int id;
-  final String sku;
-  final String name;
-  final String category;
-  final String unit;
-  final int quantity;
-  final int locationId;
-  final String imageUrl;
-
-  const Product(this.id, this.sku, this.name, this.category, this.unit,
-      this.quantity, this.locationId, this.imageUrl);
-}
-
-class Location {
-  final int id;
-  final String code;
-  final String zone;
-  final int capacity;
-
-  const Location(this.id, this.code, this.zone, this.capacity);
-}
-
-enum MovementType { receipt, shipment, transfer }
-
-class StockMovement {
-  final int id;
-  final int productId;
-  final MovementType type;
-  final int quantity;
-  final int? fromLocationId;
-  final int? toLocationId;
-  final int userId;
-  final String note;
-  final DateTime createdAt;
-
-  const StockMovement(this.id, this.productId, this.type, this.quantity,
-      this.fromLocationId, this.toLocationId, this.userId, this.note,
-      this.createdAt);
-}
+// Seed-данные для mock-хранилища (L4). Единственный клиент этого файла —
+// data/mock_repositories.dart; ни один экран и ни одна модель его не импортируют.
+import 'app_user.dart';
+import 'location.dart';
+import 'product.dart';
+import 'stock_movement.dart';
 
 // ---------- Ячейки склада ----------
 const mockLocations = [
@@ -75,8 +39,6 @@ const mockProducts = [
       'Тара', 'шт', 7, 8, ''),
 ];
 
-const mockCategories = ['Все', 'Упаковка', 'Спецодежда', 'Оборудование', 'Тара'];
-
 // ---------- История движений ----------
 final mockMovements = [
   StockMovement(1, 1, MovementType.receipt, 200, null, 4, 1,
@@ -98,25 +60,4 @@ final mockMovements = [
 ];
 
 // ---------- Текущий пользователь ----------
-const mockUserName = 'Дмитрий Ангиш';
-const mockUserEmail = 'dmitrii.anghis@stockpilot.md';
-const mockUserRole = 'Старший кладовщик · Склад «Центральный»';
-
-// ---------- Простые помощники для поиска по id ----------
-Product productById(int id) => mockProducts.firstWhere((p) => p.id == id);
-
-Location locationById(int id) => mockLocations.firstWhere((l) => l.id == id);
-
-List<Product> productsInLocation(int locationId) =>
-    mockProducts.where((p) => p.locationId == locationId).toList();
-
-List<StockMovement> movementsForProduct(int productId) =>
-    mockMovements.where((m) => m.productId == productId).toList();
-
-int usedCapacity(int locationId) =>
-    productsInLocation(locationId).fold(0, (sum, p) => sum + p.quantity);
-
-String formatDate(DateTime d) {
-  String two(int n) => n.toString().padLeft(2, '0');
-  return '${two(d.day)}.${two(d.month)}.${d.year}, ${two(d.hour)}:${two(d.minute)}';
-}
+const mockUser = AppUser(1, 'Дмитрий Ангиш', 'dmitrii.anghis@stockpilot.md');
