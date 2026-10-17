@@ -15,8 +15,16 @@ class HttpProductRepository implements ProductRepository {
   final ApiClient _api;
 
   @override
-  Future<Result<List<Product>>> fetchAll() => _api.send('GET', '/products',
-      parse: (json) => itemsOf(json, Product.fromJson));
+  Future<Result<List<Product>>> fetchAll(
+          {int page = 1, int limit = 20, String? search}) =>
+      _api.send('GET', '/products',
+          query: {
+            'page': '$page',
+            'limit': '$limit',
+            if (search != null && search.isNotEmpty) 'search': search,
+          },
+          parse: (json) => itemsOf(json, Product.fromJson));
+
 
   @override
   Future<Result<Product>> fetchById(int id) => _api.send('GET', '/products/$id',

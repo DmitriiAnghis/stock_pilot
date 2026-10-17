@@ -14,9 +14,18 @@ import 'package:stock_pilot/data/user_repository.dart';
 class FakeServer {
   bool down = false;
   final products = List.generate(
-      25,
-      (i) => Product(i + 1, 'SKU-${1000 + i}', 'Товар №${i + 1}', 'Упаковка',
-          'шт', 5 + i, 1, ''));
+    25,
+    (i) => Product(
+      i + 1,
+      'SKU-${1000 + i}',
+      'Товар №${i + 1}',
+      'Упаковка',
+      'шт',
+      5 + i,
+      1,
+      '',
+    ),
+  );
 
   Future<String?> call() async {
     await Future.delayed(const Duration(milliseconds: 300));
@@ -30,8 +39,8 @@ class FakeAuthApi extends AuthApi {
   @override
   Future<Result<void>> login(String email, String password) async =>
       password == 'parola123'
-          ? const Ok(null)
-          : const Err('Неверный email или пароль');
+      ? const Ok(null)
+      : const Err('Неверный email или пароль');
 }
 
 class FakeProductRepository implements ProductRepository {
@@ -39,8 +48,11 @@ class FakeProductRepository implements ProductRepository {
   final FakeServer s;
 
   @override
-  Future<Result<List<Product>>> fetchAll(
-      {int page = 1, int limit = 20, String? search}) async {
+  Future<Result<List<Product>>> fetchAll({
+    int page = 1,
+    int limit = 20,
+    String? search,
+  }) async {
     final err = await s();
     if (err != null) return Err(err);
     final all = s.products
