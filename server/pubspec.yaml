@@ -1,0 +1,13 @@
+name: stock_pilot_server
+description: Backend StockPilot (L5) — REST API на Dart (shelf + SQLite + JWT).
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.0
+dependencies:
+  crypto: ^3.0.7
+  dart_jsonwebtoken: ^3.4.1
+  shelf: ^1.4.3
+  shelf_router: ^1.1.5
+  sqlite3: ^3.7.1

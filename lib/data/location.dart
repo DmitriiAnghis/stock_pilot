@@ -11,7 +11,17 @@ class Location {
   const Location(this.id, this.code, this.zone, this.capacity,
       {this.used = 0, this.itemCount = 0});
 
+  factory Location.fromJson(Map<String, dynamic> j) => Location(
+        j['id'] as int,
+        j['code'] as String,
+        j['zone'] as String? ?? '',
+        j['capacity'] as int? ?? 0,
+        used: j['used'] as int? ?? 0,
+        itemCount: j['itemCount'] as int? ?? 0,
+      );
+
   int get free => capacity - used;
+
   double get fill => capacity == 0 ? 0 : used / capacity;
 
   Location copyWith({int? used, int? itemCount}) => Location(

@@ -16,6 +16,29 @@ class StockMovement {
       this.fromLocationId, this.toLocationId, this.userId, this.note,
       this.createdAt);
 
-  StockMovement copyWith({int? id}) => StockMovement(id ?? this.id, productId,
+  factory StockMovement.fromJson(Map<String, dynamic> j) => StockMovement(
+        j['id'] as int,
+        j['productId'] as int,
+        MovementType.values.byName(j['type'] as String),
+        j['quantity'] as int,
+        j['fromLocationId'] as int?,
+        j['toLocationId'] as int?,
+        j['userId'] as int? ?? 0,
+        j['note'] as String? ?? '',
+        DateTime.parse(j['createdAt'] as String).toLocal(),
+      );
+
+  /// Без id, userId и даты — их проставляет сервер.
+  Map<String, dynamic> toJson() => {
+        'productId': productId,
+        'type': type.name,
+        'quantity': quantity,
+        'fromLocationId': fromLocationId,
+        'toLocationId': toLocationId,
+        'note': note,
+      };
+
+  StockMovement copyWith
+({int? id}) => StockMovement(id ?? this.id, productId,
       type, quantity, fromLocationId, toLocationId, userId, note, createdAt);
 }
