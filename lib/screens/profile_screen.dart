@@ -8,6 +8,28 @@ import 'package:go_router/go_router.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  // Блокирующее решение → AlertDialog с результатом.
+  Future<void> _logout(BuildContext context) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Выйти из аккаунта?'),
+        content: const Text('Для продолжения работы нужно будет войти снова.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(dialogCtx, false),
+              child: const Text('Нет')),
+          FilledButton(
+              onPressed: () => Navigator.pop(dialogCtx, true),
+              child: const Text('Да, выйти')),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      context.go('/login'); // go: раздел с вкладками уходит из стека
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -70,7 +92,9 @@ class ProfileScreen extends StatelessWidget {
                   leading: const Icon(Icons.file_download_outlined),
                   title: const Text('Экспорт истории в CSV'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Экспорт CSV будет доступен позже'))),
+
                 ),
               ],
             ),
@@ -81,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
               minimumSize: const Size.fromHeight(48),
               foregroundColor: scheme.error,
             ),
-            onPressed: () => context.go('/login'),
+            onPressed: () => _logout(context),
 
             icon: const Icon(Icons.logout),
             label: const Text('Выйти'),

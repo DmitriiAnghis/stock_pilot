@@ -12,6 +12,30 @@ class ProductDetailScreen extends StatelessWidget {
 
   const ProductDetailScreen({super.key, required this.id});
 
+  // Деструктивное действие → диалог подтверждения + SnackBar.
+  Future<void> _delete(BuildContext context, Product product) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Удалить товар?'),
+        content: Text('«${product.name}» будет удалён из каталога.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(dialogCtx, false),
+              child: const Text('Отмена')),
+          FilledButton(
+              onPressed: () => Navigator.pop(dialogCtx, true),
+              child: const Text('Удалить')),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Товар ${product.sku} удалён')));
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -25,10 +49,11 @@ class ProductDetailScreen extends StatelessWidget {
         title: Text(product.sku),
         actions: [
           IconButton(
-            onPressed: () {},
-            tooltip: 'Редактировать',
-            icon: const Icon(Icons.edit_outlined),
+            onPressed: () => _delete(context, product),
+            tooltip: 'Удалить',
+            icon: const Icon(Icons.delete_outline),
           ),
+
         ],
       ),
       body: ListView(
