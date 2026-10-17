@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
+import '../data/location.dart';
 
 /// Карточка складской ячейки с полоской загруженности.
 /// Используется: список ячеек.
@@ -13,9 +13,10 @@ class LocationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final used = usedCapacity(location.id);
-    final percent = used / location.capacity;
-    final count = productsInLocation(location.id).length;
+    final used = location.used;
+    final percent = location.fill.clamp(0.0, 1.0);
+    final count = location.itemCount;
+
 
     return Card(
       clipBehavior: Clip.antiAlias,

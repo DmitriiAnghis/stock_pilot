@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
+import 'package:provider/provider.dart';
+import '../data/stock_movement.dart';
+import '../models/locations_model.dart';
+import '../models/products_model.dart';
+import '../utils/format.dart';
 
 /// Название типа операции.
 String movementLabel(MovementType type) => switch (type) {
@@ -26,7 +30,10 @@ class MovementTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final product = productById(movement.productId);
+    final product = context.watch<ProductsModel>().byId(movement.productId);
+    final locations = context.watch<LocationsModel>();
+    final name = product?.name ?? 'Товар #${movement.productId}';
+    final unit = product?.unit ?? '';
 
     // цвета берём только из темы
     final (bg, fg) = switch (movement.type) {
@@ -41,12 +48,8 @@ class MovementTile extends StatelessWidget {
       MovementType.transfer => '',
     };
 
-    final from = movement.fromLocationId == null
-        ? '—'
-        : locationById(movement.fromLocationId!).code;
-    final to = movement.toLocationId == null
-        ? '—'
-        : locationById(movement.toLocationId!).code;
+    final from = locations.codeOf(movement.fromLocationId);
+    final to = locations.codeOf(movement.toLocationId);
 
     return Card(
       child: Padding(
@@ -64,7 +67,7 @@ class MovementTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: text.titleSmall,
@@ -83,7 +86,8 @@ class MovementTile extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              '$sign${movement.quantity} ${product.unit}',
+              '$sign${movement.quantity} $unit',
+
               style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
           ],
